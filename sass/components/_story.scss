@@ -1,0 +1,96 @@
+.story {
+  width: 75%;
+  margin: 3rem auto;
+  box-shadow: 0 3rem 6rem rgba($color-black, 0.1);
+  background-color: rgba($color-white, 0.6);
+  border-radius: 3px;
+  padding: 6rem;
+  padding-left: 9rem;
+  font-size: $default-font-size;
+  transform: skewX(-12deg);
+
+  /* Code below won't work because we can have only ONE transform property for each element. Since our code later down the line also define transform, the later code will overwrite this here. To solve that, we have to define this in each of the childs. */
+  // & > * {
+  //   transform: skewX(-12deg);
+  // }
+
+  @include respond(phone) {
+    width: 100%;
+    padding: 7rem;
+    transform: skewX(0);
+  }
+
+  &__shape {
+    width: 15rem;
+    height: 15rem;
+    float: left;
+    overflow: hidden;
+    border-radius: 50%;
+    
+    /* If browser support clip-path property, then only we want to apply the shape-outside property. */
+    @supports (-webkit-clip-path: polygon(0 0)) or (clip-path: polygon(0 0)) {
+      -webkit-clip-path: circle(50% at 50% 50%);
+      clip-path: circle(50% at 50% 50%);
+      /* shape-outside property defines a shape, which may be non-rectangular—around, which adjacent inline content should wrap. By default, inline content wraps around its margin box; shape-outside provides a way to customize this wrapping, making it possible to wrap text around complex objects rather than simple boxes.
+      Jonas said for shape-outside to work, it must be floated & with height & width defined.
+      Shorthand: circle(shape-radius at horizontal-position vertical-position)
+      NOTICE: The shape-radius is percentage calculated based on the diameter. */
+      -webkit-shape-outside: circle(50% at 50% 50%);
+      shape-outside: circle(50% at 50% 50%);
+      /* If we can use clip-path, then we no need border-radius anymore. */
+      border-radius: none;
+    }
+    /* Jonas said to add spaces for floated elements, it is best not to use margin but translate.
+    To retain its shape, we skewX 12 degree because its parent skewX -12 degree. */
+    transform: translateX(-3rem) skewX(12deg);
+    position: relative;
+
+    @include respond(phone) {
+      transform: skewX(0);
+    }
+  }
+
+  &__img {
+    /* We use height instead of width because in this case we're fitting it into a circle. */
+    height: 100%;
+    /* This is to make the image center the way we want and bigger little bit. */
+    transform: translateX(-4rem) scale(1.4);
+    /* Again, the line below even Jonas doesn't understand how it work. But the problem get solved. Weird! */
+    backface-visibility: hidden;
+    transition: all 0.5s;
+  }
+
+  &__text {
+    transform: skewX(12deg);
+    @include respond(phone) {
+      transform: skewX(0);
+    }
+  }
+
+  &__caption {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    color: $color-white;
+    text-transform: uppercase;
+    font-size: 1.7rem;
+    text-align: center;
+    /* We use transform & opacity to set its initial state before animinated. */
+    transform: translate(-50%, 20%);
+    opacity: 0;
+    transition: all 0.5s;
+    /* This is to solve the glitch at the end of the animiation. But the "how" part I don't understand. */
+    backface-visibility: hidden;
+  }
+
+  &:hover &__caption {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+
+  &:hover &__img {
+    transform: translateX(-4rem) scale(1);
+    /* This is to set the image to blur and lower brigthness. */
+    filter: blur(3px) brightness(80%);
+  }
+}

@@ -1,0 +1,19 @@
+.bg-video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  z-index: -1;
+  opacity: 0.15;
+  /* Because we use object-fit: cover; to fit video inside this parent while maintaining its aspect ratio, we will have overflow. Code below solves that issue. */
+  overflow: hidden;
+
+  &__content {
+    height: 100%;
+    width: 100%;
+    /* Remember images & videos will try to maintain its aspect ratio. Code below will make the video try to fit the entire parent while still maintaining its aspect ratio. The part of the video that doesn't fit in its parent will get clipped off.
+        While background-size: cover; is set to targetting background-image set by CSS alone, object-fit is set to target HTML elements, video in this case. */
+    object-fit: cover;
+  }
+}

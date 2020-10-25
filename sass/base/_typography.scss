@@ -1,0 +1,99 @@
+/* When we want to inherit something, it is best practice to put in body. Eg font-family, font-size. */
+body {
+  font-family: 'Lato', sans-serif;
+  font-weight: 400;
+  font-size: 1.6rem;
+  /* 1.7 times bigger than the predefined line height. */
+  line-height: 1.7;
+  color: $color-grey-dark;
+}
+
+.heading-primary {
+  color: $color-white;
+  text-transform: uppercase;
+  /* Determines whether or not the 'back' side of a transformed element is visible when facing the viewer. With an identity transform, the front side of an element faces the viewer.
+  In other word, this determines whether the 'back' side of an element is visible to user when transforming.
+  We use this hack to eliminate the shakiness at the end of our animation. But no one knows why there's shakiness.*/
+  backface-visibility: hidden;
+  margin-bottom: 6rem;
+
+  &--main {
+    display: block;
+    font-size: 6rem;
+    font-weight: 400;
+    /* Because we have huge letter-spacing, we need to add little padding to center it.;*/
+    letter-spacing: 3.5rem;
+    padding-left: 3.5rem;
+    /* Below is the shorthand method for the arguments we can use to set for the animation.
+    animation: name duration timing-function delay iteration-count direction fill-mode; */
+    animation-name: moveInLeft;
+    animation-duration: 1s;
+    animation-timing-function: ease-out;
+
+    /*
+    animation-delay: 3s;
+    animation-iteration-count: 3;
+    */
+
+    @include respond(phone) {
+      letter-spacing: 1rem;
+      font-size: 5rem;
+    }
+  }
+
+  &--sub {
+    display: block;
+    font-size: 2rem;
+    font-weight: 700;
+    /* Because we have huge letter-spacing, we need to add little padding to center it.*/
+    letter-spacing: 1.75rem;
+    padding-left: 1.72rem;
+    animation: moveInRight 1s ease-out;
+  }
+
+  @include respond(phone) {
+    letter-spacing: 0.5rem;
+  }
+}
+
+.heading-secondary {
+  font-size: 3.5rem;
+  text-transform: uppercase;
+  font-weight: 700;
+  /* This will have the background color span around its text only instead of all the way to the end. */
+  display: inline-block;
+  background-image: linear-gradient(to right, $color-primary-light, $color-primary-dark);
+  /* This will make the background image appear only behind those text shapes. Of course we need to set the text color to transparent for it to work. */
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  letter-spacing: 0.2rem;
+  transition: all 0.2s;
+
+  @include respond(tab-port) {
+    font-size: 3rem;
+  }
+  
+  @include respond(phone) {
+    font-size: 2.5rem;
+  }
+
+  &:hover {
+    transform: skewY(2deg) skewX(15deg) scale(1.1);
+    text-shadow: 0.5rem 1rem 2rem rgba($color-black, 0.2);
+  }
+}
+
+.heading-tertiary {
+  font-size: $default-font-size;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.paragraph {
+  font-size: $default-font-size;
+  /* Because normall there is space after a paragraph, but not the last one. */
+  &:not(:last-child) {
+    margin-bottom: 3rem;
+  }
+}

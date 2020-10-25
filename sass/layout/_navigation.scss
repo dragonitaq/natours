@@ -1,0 +1,197 @@
+.navigation {
+  &__checkbox {
+    display: none;
+  }
+
+  &__button {
+    background-color: $color-white;
+    /* Notice the size here is 1rem higher than the background because we can to cover it. */
+    height: 7rem;
+    width: 7rem;
+    position: fixed;
+    /* Tricky part here is to set 6rem instead of 6.5rem because we need 0.5rem spaces from all sides in order to center this button on top of the background and have it cover it.  */
+    top: 6rem;
+    right: 6rem;
+    border-radius: 50%;
+    z-index: 2000;
+    box-shadow: 0 1rem 3rem rgba($color-black, 0.1);
+    /* This is to center the button icon and its pseudo elements. */
+    text-align: center;
+    cursor: pointer;
+
+    @include respond(tab-port) {
+      top: 4rem;
+      right: 4rem;
+    }
+
+    @include respond(phone) {
+      top: 3rem;
+      right: 3rem;
+    }
+  }
+  
+  &__background {
+    height: 6rem;
+    width: 6rem;
+    border-radius: 50%;
+    /* Similar to position absolute, but fixed will not change position even the page scroll. It also take the element out of the flow and allows us to use properties like top, bottom, right or left. */
+    position: fixed;
+    top: 6.5rem;
+    right: 6.5rem;
+    /* Radial gradient goes from middle point of the element to all outward directions. */
+    background-image: radial-gradient($color-primary-light, $color-primary-dark);
+    z-index: 1000;
+    transition: transform 0.8s cubic-bezier(0.86, 0, 0.07, 1);
+    
+    @include respond(tab-port) {
+      top: 4.5rem;
+      right: 4.5rem;
+    }
+
+    @include respond(phone) {
+      top: 3.5rem;
+      right: 3.5rem;
+    }
+  }
+  
+  &__nav {
+    /* We want the stay the at same position no matter at where the page has been scrolled. */
+    position: fixed;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    z-index: 1500;
+    /* We make the navigation buttons disappear */
+    opacity: 0;
+    // Interesting to know setting width to 0 will make the element disappear.
+    width: 0;
+    transition: all 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    /* Solution to solve the nav buttons still appear at the left. */
+    // visibility: hidden;
+  }
+
+  &__list {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    list-style: none;
+    text-align: center;
+    width: 100%;
+  }
+
+  &__item {
+    margin: 1rem;
+    /* Much simpler solution to solve the nav buttons still appear at the left. The appearance at the left side because the anchors element get overflowed due to the width of its parent set to zero. */
+    overflow: hidden;
+  }
+
+  &__link {
+    &:link,
+    &:visited {
+      /* It has to be an inline block for the padding & some animation to work. Because some animations move the whole block, which couldn't perform when it is an inline element. */
+      display: inline-block;
+      font-size: 3rem;
+      font-weight: 300;
+      padding: 1rem 2rem;
+      color: $color-white;
+      text-decoration: none;
+      text-transform: uppercase;
+      background-image: linear-gradient(120deg, transparent 0%, transparent 50%, $color-white 50%);
+      /* We make the background size of the button to be very huge. This will make the transparent part become out of the viewing scope. Then we can apply the linear-gradient animation effect using background position trick. */
+      background-size: 220%;
+      transition: all 0.4s;
+
+      span {
+        margin-right: 1.5rem;
+        display: inline-block;
+      }
+    }
+
+    &:hover,
+    &:active {
+      /* When we use percentage, there are 2 values, first is the horizontal position and the second value is the vertical. Since we only use one value here, we then manipulate the horizontal position then the other value will be defaulted to 50%.
+      This link: https://bit.ly/3mf8uSf for visual explanation illustrates very well.
+      There are many values other than using percentage.
+      Visit for more info: https://www.w3schools.com/cssref/pr_background-position.asp */
+      background-position: 100%;
+      color: $color-primary;
+      transform: translateX(1rem);
+    }
+  }
+
+  /* ############################## FUNCTIONALITY ############################# */
+
+  &__checkbox:checked ~ &__background {
+    /* We make the background size very huge after the checkbox is checked. */
+    transform: scale(80);
+  }
+
+  &__checkbox:checked ~ &__nav {
+    /* Make the navigation buttons appear back. */
+    opacity: 1;
+    width: 100%;
+    /* Solution to solve the nav buttons still appear at the left. */
+    // visibility: visible;
+  }
+
+  /* ################################## ICON ################################## */
+
+  &__icon {
+    position: relative;
+    /* To push the icon(span & pseudo elements) down. */
+    margin-top: 3.5rem;
+
+    &,
+    &::before,
+    &::after {
+      width: 3rem;
+      height: 2px;
+      background-color: $color-grey-dark-3;
+      display: inline-block;
+    }
+
+    & {
+      transition: all 0.2s;
+    }
+
+    &::before,
+    &::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      transition: all 0.2s;
+    }
+
+    &::before {
+      top: -0.8rem;
+    }
+    &::after {
+      top: 0.8rem;
+    }
+  }
+
+  &__button:hover &__icon::before {
+    top: -1rem;
+  }
+
+  &__button:hover &__icon::after {
+    top: 1rem;
+  }
+
+  &__checkbox:checked + &__button &__icon {
+    background-color: transparent;
+  }
+
+  &__checkbox:checked + &__button &__icon::before {
+    /* Because rotation will rotate at degree defaulted to around the centre point of the element, that is why we need to center the element make sure after rotation, it forms an X shape with ::after element.
+    However, we can specify where the rotation origin point to animate at using transform-origin property. However, it is no needed here in this case. */
+    top: 0;
+    transform: rotate(135deg);
+  }
+
+  &__checkbox:checked + &__button &__icon::after {
+    top: 0;
+    transform: rotate(-135deg);
+  }
+}

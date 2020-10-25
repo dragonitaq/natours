@@ -1,0 +1,50 @@
+/* We can define animation name however we like. We use 'moveInLeft' in this case.
+It is advisable to only animate 2 properties at once for best browser performance.
+The keyframes % is the 'steps' of animation.*/
+@keyframes moveInLeft {
+  /* If we don't spefic any properties value at 100% keyframes, the original CCS value of the element will be used for reaching 100% keyframes. */
+  0% {
+    /* We set the starting opacity to zero. */
+    opacity: 0;
+    /* Animate along x-axis using translateX. The translateX's value is the position away from original position which will start animate from. Therefore, +ve value will move left (because origin position is on the left) and -ve value will move right (because origin position is on the left).*/
+    transform: translateX(-10rem);
+  }
+
+  80% {
+    transform: translateX(1rem);
+  }
+
+  100% {
+    /* Here we set value back to zero denote original states. It is optional if we just want to go back to the original states. */
+    opacity: 1;
+    transform: translate(0);
+  }
+}
+
+@keyframes moveInRight {
+  0% {
+    opacity: 0;
+    transform: translateX(10rem);
+  }
+
+  80% {
+    transform: translateX(-1rem);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translate(0);
+  }
+}
+
+@keyframes moveInBottom {
+  0% {
+    opacity: 0;
+    transform: translateY(3rem);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translate(0);
+  }
+}

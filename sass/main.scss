@@ -1,0 +1,32 @@
+/* Notice there is no underscore & file extension needed to locate the base file because SASS understands it. Using and underscore "_"  before sass files lets the sass compiler know that we are working with partial files.  When partials are processed, the compiler knows not to create a separate stylesheet for them.
+Keep in mind that @import will be phased out in the future and will be replace by @use. But isn't supported yet when using node-sass. When it is supported, we should change to @use. */
+
+/* Shorthand to importing all files in Sass folders with @import */
+// @import "base/*"     // import all the files in the base folder.
+// @import "base/**/*"  // import all the files in the base tree, like subfolders and files.
+
+@import "abstracts/functions";
+
+@import "abstracts/mixins";
+@import "abstracts/variables";
+
+@import "base/animations";
+@import "base/base";
+@import "base/typography";
+@import "base/utilities";
+
+@import "components/bg-video";
+@import "components/button";
+@import "components/card";
+@import "components/composition";
+@import "components/feature-box";
+@import "components/form";
+@import "components/popup";
+@import "components/story";
+
+@import "layout/footer";
+// @import "layout/grid"; //Remove this in order to use flexbo & grid
+@import "layout/header";
+@import "layout/navigation";
+
+@import "pages/home";

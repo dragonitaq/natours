@@ -1,0 +1,70 @@
+.header {
+  /* This height is for when clip-path is not working. We shorten the height to imply there are content below. */
+  height: 85vh;
+  /* Put linear-gradient before url img will make the gradient appear on top of the img.
+  In SCSS, we can put #hex color code inside rgba brackets.*/
+  background-image: linear-gradient(to right bottom, rgba($color-primary-light, 0.8), rgba($color-primary-dark, 0.8)), url(../img/hero-small.jpg);
+  /* Whatever the  width of viewport is, cover will try to fit inside of the box. */
+  background-size: cover;
+  /* Make img anchor to spcify position  when auto-adjust to fit viewport. We can use top, bottom or center. */
+  background-position: top;
+  position: relative;
+  
+  /* Sometimes, even if after we prefix, the old browser will might not working properly, because it is too old! Then we need to use graceful degradation.
+  Notice, at the line of @supports, we actually no need to input the exact value we want for the property, we can put in arbitrary value for it to work, then inside the curly brackets, we then specify our actual values. */
+  @supports (-webkit-clip-path: polygon(0 0)) or (clip-path: polygon(0 0)) {
+    -webkit-clip-path: polygon(0 0, 100% 0, 100% 75vh, 0 100%);
+    clip-path: polygon(0 0, 100% 0, 100% 75vh, 0 100%);
+    height: 95vh;
+  }
+
+  /* If the screen resolution is higher than 192dpi, then load this background image.
+  192dpi (dot per inch) is Mac retina display which has DPR: 2.(device pixel ratio).
+  The reason we add a condition where we want the code to apply only if the viewport width larger than 37.5em (600px) because we don't want phone to download high-res image EVEN if their display has DPR: 2 because it will be just waste of resources.
+  Also, we added min-width: 125em (2000px) as in OR conditon because we want that even of the device has just DPR:1, but with big screen reason, we should serve high-res image.
+  We have to do another similar condition using -webkit-min-device-pixel-ratio: 2 becasue Safari needs this specifically in order for it to work. */
+  @media (min-resolution: 192dpi) and (min-width: 37.5em), (-webkit-min-device-pixel-ratio: 2) and (min-width: 37.5em), (min-width: 125em) {
+    background-image: linear-gradient(to right bottom, rgba($color-primary-light, 0.8), rgba($color-primary-dark, 0.8)), url(../img/hero.jpg);
+  }
+
+  @include respond(phone) {
+    -webkit-clip-path: polygon(0 0, 100% 0, 100% 85vh, 0 100%);
+    clip-path: polygon(0 0, 100% 0, 100% 85vh, 0 100%);
+  }
+
+  &__logo-box {
+    /* We set this to absolute because the parent element is relative. In other words, we want this logo to be absolutely positioned in this container which anchors to its parent. In turn this parent is relative positioned to its parent again. */
+    position: absolute;
+    top: 4rem;
+    left: 4rem;
+  }
+
+  &__logo {
+    /* Setting height to a fix px and browser will auto correct width and vice versa. */
+    height: 3.5rem;
+  }
+
+  &__text-box {
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+  }
+
+  /* ############# For testing purpose, not actual course content ############# */
+
+  /* If we write code as below, it will cause the logo flicker.
+
+  .header__logo {animation: moveInLeft 1s;}
+
+  This is because when we were hovering over the logo and animating it, the logo wanted to move; but when it did, our hover state was lost immediately since the element was no longer under our active mouse. This results in the animation start and reset and repeat over & over again. Thus, we were left with flickering effect.
+  When we hover over the div container (logo-box) instead, the logo is free to move as intended since our container remains static. If you to hover over the logo-box, then quickly move your cursor out of the boundaries of the box.  You will see the animation end abruptly.
+
+  Thus to solve the issue, we write the code as below. Notice ':hover' is put right after .logo-box. This denotes when our mouse hover on .logo-box div container, we then animate ONLY the .logo, NOT the container. */
+  &__logo-box:hover &__logo {
+    animation: moveInLeft 1s;
+  }
+
+  /* ############################# End of testing ############################# */
+}

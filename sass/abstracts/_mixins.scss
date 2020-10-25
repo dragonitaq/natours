@@ -1,0 +1,207 @@
+@mixin clearfix {
+  &::after {
+    content: '';
+    display: table;
+    clear: both;
+  }
+}
+
+@mixin absCenter {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* ########################################################################## */
+/*                             Media query manager                            */
+/* ########################################################################## */
+
+/*
+Managing order: Base + typography > general layout + grid > page layout > components
+
+In real life project, the minimum width size to consider for responsiveness is 320px.
+
+In Chrome dev tool, we need to select "Disable cache" under network tab in order for the image responsiveness to work properly during our testing phrase. This is because browser is smart enough to determine that since the user has already downloaded 2x image, it doesn't provide 1x image, which would be additional download (http request), no matter how small the size is.
+Furthermore, in the network tab, we can select "Img" to show every image details that is currently rendered on the page.
+
+??? Question:
+What about video responsiveness?
+Jonas's answer:
+You can use the srcset attribute on the <source>  element, such as we did with the responsive image in the footer
+!!! Question:
+May I put the <img>  tag inside of the <video>  element in order to use a video for desktop and an image for the devices with smaller resoluton?
+Jonas's answer:
+That's an interesting question, I haven't thought about that. Definitely try if it works, and let me know the results.
+
+??? Question:
+Resolution switching, density switching and art direction. How do you decide which method(s) to use for making the images on a website responsive?
+!!! Advising answer:
+Use art direction for images that are different. Perhaps they're cropped to make more sense on a smaller screen. Use resolution switching or density switching when you have the same images.  Density switching seems to be a subset of art direction or an alternative to resolution switching. I'm not sure if it matters or not to use density vs resolution. Perhaps if you don't want the browser to decide, density is better.
+
+??? Question:
+<picture> or <img>?
+!!! Advising answer:
+The <picture>  tag (and <source>  tags) and used when you to do some heavy art direction and such.  The img srcset  attribute is a bit more lightweight and is really all you need when you want to design for different resolution displays.  In the end, both <picture>  and the srcset  attribute will gracefully fallback for older browsers, so in effect, it doesn't matter to much which you use.  However, if you are only designing for pixel density, then srcset  would probably be best.
+
+??? Question:
+Resolution switching is a must?
+!!! Advising answer:
+It provides a better experience for people visiting your site.
+- People on mobile will download smaller pictures, so it wil cost them less.
+- A website that loads faster will lose less visitor that abandon the website before it even loads.
+- Google uses page load times in their process to rank pages.
+Google have handy tool that can help you test your website's pageSpeed: 
+https://developers.google.com/speed/pagespeed/insights/
+ 
+Breakpoint width:
+0 - 600px: Phone
+600 - 900px: Table portrait
+900 - 1200px: Table landscape
+1200 - 1800px: Laptop (Our default style)
+1800px & above: Big desktop
+
+$breakpoint argument names:
+- phone
+- tab-port
+- tab-land
+- big-desktop
+
+
+Important rule: In media query, rem & em are not affectly by our self-defined root font-size inside .html{}. Instead, they are only affected by the browser-defined font-size even we have self-defined to overwrite it in our code. So, when users change the browser font-size, rem & em in media query will calculate base on that directly, not base on our root font-size inside .html{}. There is a difference!
+
+But after experts experimentating around it, they concluded em is best suited for media query, not rem.
+Remember the constant is 1em = 16px.
+*/
+
+/* This is WITHOUT using @if function in SASS. */
+// @mixin respond-phone {
+//   @media (max-width: 37.5em) { @content };
+// }
+
+@mixin respond($breakpoint) {
+  /* Ask if width <= 600px? */
+  @if $breakpoint == phone {
+    @media (max-width: 37.5em) {
+      // 600px
+      @content;
+    }
+  }
+  /* Ask if width <= 900px? */
+  @if $breakpoint == tab-port {
+    @media (max-width: 56.25em) {
+      // 900px
+      @content;
+    }
+  }
+  /* Ask if width <= 1200px? */
+  @if $breakpoint == tab-land {
+    @media (max-width: 75em) {
+      // 1200px
+      @content;
+    }
+  }
+  /* Ask if width >= 1800px? */
+  @if $breakpoint == big-desktop {
+    /* We use min-width here because our default style already applied to width between 1200-1800px, so for anything above that width, then only the customized style to apply. So it is a minumum width here. */
+    @media (min-width: 112.5em) {
+      // 1800px
+      @content;
+    }
+  }
+}
+
+/* ########################################################################## */
+/*                     Another way of media query manager                     */
+/* ########################################################################## */
+
+/* This can avoid code overwriting and circumvent the need to write our code in a correct flow.
+This method is effective & modular. I personally feel this is way better! */
+
+/* $breakpoint argument names with declared variables. */
+// $phone: 600px;
+// $tab-port: 900px;
+// $tab-land: 1200px;
+// $big-desktop: 1800px;
+
+// @mixin respond($breakpoint) {
+//   /* Ask if width <= 600px? */
+//   @if $breakpoint == phone {
+//     @media (max-width: $phone/16px * 1em) {
+//       @content;
+//     }
+//   }
+//   @if $breakpoint == tab-port {
+//     /* Ask if width >= 600 and width <= 900px? */
+//     @media (min-width: $phone/16px * 1em) and (max-width: $tab-port/16px * 1em) {
+//       @content;
+//     }
+//   }
+//   @if $breakpoint == tab-land {
+//     /* Ask if width >= 900px and width <= 1200px? */
+//     @media (min-width: $tab-port/16px * 1em) and (max-width: $tab-land/16px * 1em) {
+//       @content;
+//     }
+//   }
+//   @if $breakpoint == big-desktop {
+//     /* Ask if width >= 1800px? */
+//     @media (min-width: $big-desktop/16px * 1em) {
+//       @content;
+//     }
+//   }
+// }
+
+/* However, Jonas responded why he doesn't use mix and max. Below is his answer:
+The fact that the media queries overlap is actually really helpful! Imagine that they wouldn't, than we would have to repeat all the stuff we want to happen from 600px-900px in the media query for 900px-1200px (for example). This wouldn't be helpful at all. */
+
+/* ########################################################################## */
+/*                   Yet anothet way of media query manager                   */
+/* ########################################################################## */
+
+/* $breakpoint argument names with declared variables. */
+// $phone: 600px;
+// $tab-port: 900px;
+// $tab-land: 1200px;
+// $big-desktop: 1800px;
+
+/* The mixin is for phone, tab-port & tab-land */
+// @mixin respondMax($breakpoint) {
+//   @media (max-width: $breakpoint/16px * 1em) {
+//     @content;
+//   }
+// }
+
+/* This mixin is for big-desktop only */
+// @mixin respondMin($breakpoint) {
+//   @media (min-width: $breakpoint/16px * 1em) {
+//     @content;
+//   }
+// }
+
+/* ########################################################################## */
+
+/* My thought after writing media query:
+Whenever we code something on the display that is important for user to click it, it is bad idea to hide under hover effect or any other effect. For example in our project, user will need to mouse hover to our card then only discover the cta button. How is the user supppose to know know the cta button is hide behind the card? It can be the non-IT savvy user never know that they can hover over something on the webpage or the user is using touch screen on big latop. It gives the risk that the button never appear for user at all. So our important cta button will fail to show its function. */
+
+
+/* ############################# Feature Queries ############################ */
+
+/* We can use NOT logic for @support. Example below: 
+
+@supports not(mix-blend-mode: overlay) {
+    // alternative styles here
+  }
+
+For more info, visit: https://www.sitepoint.com/an-introduction-to-css-supports-rule-feature-queries/
+
+When we want to know if a feature is supported by browsers, we:
+
+First, check with caniuse for the level of support of each property. It's easy to tell which ones are new by having experience with the old ones.
+
+Second, make sure you use an autoprefixer to enable support for those browsers that have partial support (with prefixes). You don't even need to check each property yourself for this; the autoprefixer will automatically check caniuse for you and prefix those properties that need prefixes.
+
+Third, if the prefixes don't help, you could check whether there are any polyfills that enable those properties to work on older browsers.
+
+FOURTH, if there aren't, you could use the @supports feature to render a different style for those browsers; a simpler style that omits the use of those techniques.
+
+*/

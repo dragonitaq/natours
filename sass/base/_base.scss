@@ -1,0 +1,59 @@
+/* GRID TRICK!
+  When we syntax with "items", it indicates the individual items inside the grid cells/areas.
+  When we syntax with "contents", it indicates the tracks for rows & columns.
+  When we syntax with "align", it indicates the vertical direction or Y-axis .
+  When we syntax with "justify", it indicates the horizontal direction or X-axis. */
+
+/* This is universal selector with "*" keyword. It has the lowest CSS  specificity.*/
+*,
+*::after,
+*::before {
+  margin: 0;
+  padding: 0;
+  /* Why we use inheritance here? Jonas said because it is easier to change box-sizing property later in plugins or other components where we might want to use different value for it. This technically doesn't make any difference, but it gives developer a sense that this property is meant to be inherited only, not for setting it explicitly. */
+  box-sizing: inherit;
+}
+
+html {
+  /* This is the root font-size. If we set it in px, it will overwrite browser settings and inhibit user to change their font size setting in their browser. This is not good for old people who need to read big font.
+  To counter this, we use relative % to achieve 10px for the root. Since the default font size of modern browser is 16px, 62.5% will result in 10px and yet user can change their font size relative to this. */
+  font-size: 62.5%;
+
+  /* Ask if width <= 1200px? */
+  @include respond(tab-land) {
+    font-size: 56.25%; // 9/16 = 56.25%, thus 1rem = 9px
+  }
+
+  /* Ask if width <= 900px? */
+  @include respond(tab-port) {
+    font-size: 50%; // 8/16 = 50%, thus 1rem = 8px
+  }
+
+  /* Ask if width <= 600px? */
+  // @include respond(phone) {
+  //   font-size: 37.5%; // 6/16 = 37.5%, thus 1rem = 6px
+  // }
+
+  /* Ask if width >= 1800px? */
+  @include respond(big-desktop) {
+    font-size: 75%; // 12/16 = 75%, thus 1rem = 12px
+  }
+}
+
+/* When we want to inherit something, it is best practice to put in body. Eg font-family, font-size. */
+body {
+  /* We define box-sizing here for inheritance purpose. */
+  box-sizing: border-box;
+  padding: 3rem;
+
+  /* Ask if width < 900px? */
+  @include respond(tab-port) {
+    padding: 0;
+  }
+}
+
+/* This will change the color of the selected/highlighted text. */
+::selection {
+  background-color: $color-primary;
+  color: $color-white;
+}

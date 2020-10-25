@@ -1,0 +1,130 @@
+.form {
+  &__group:not(:last-child) {
+    margin-bottom: 2rem;
+  }
+
+  &__input {
+    /* By default, when dealing with input element, browser doesn't inherit our font family, it will just use its default font family. So we have to explicitly define it. The exact same property apply to color. */
+    font-family: inherit;
+    color: inherit;
+    font-size: 1.5rem;
+    padding: 1.5rem 2rem;
+    border-radius: 2px;
+    background-color: rbga($color-white, 0.5);
+    border: none;
+    /* Because we have border at the bottom when it is being focus, it will push the element down by 3px during focus, which is not pleasant for eyesight. So we set the same border bottom here but make it transparent. */
+    border-bottom: 3px solid transparent;
+    width: 90%;
+    display: block;
+    transition: all 0.3s;
+
+    &:focus {
+      /* We set to none because by default the browser will give outline to input box when in focus.
+      Warning: For accessibility reason, we should never leave the outline to none, we have to style it other way to let the user knows the input element is in focus.
+      So in this case we want to style it with our own style which feel more streamline to our overall design. */
+      outline: none;
+      box-shadow: 0 1rem 2rem rgba($color-black, 0.1);
+      /* This property gives green color at border bottom when data validation done by browser is passed. */
+      border-bottom: 3px solid $color-primary;
+    }
+
+    /* This gives property for the input field when the data validation done by browser is failed. */
+    &:focus:invalid {
+      border-bottom: 3px solid $color-secondary-dark;
+    }
+
+    /* This is not needed anymore as by default browser will style grey color for placeholder text. */
+    &::-webkit-input-placeholder {
+      color: $color-grey-dark-2;
+    }
+  }
+
+  &__label {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-left: 2rem;
+    margin-top: 0.7rem;
+    display: block;
+    transition: all 0.3s;
+  }
+
+  /* The "+" sign is CSS immediate adjacent sibling selector (ONLY the one rigth after it). We have to do it this way because &__lable is NOT the child of &__input, thus we can have to select like this instead of nest into other selector.
+  Side note: We can use "~" sign if we want sibling selector but not immedidate one.
+  placeholder-shown pseudo class denotes when we have nothing written in the input field yet but is in focus. */
+  &__input:placeholder-shown + &__label {
+    opacity: 0;
+    /* We set it to hidden so that user can't interact with it.
+    Table below explains the difference:
+    +--------------------+----------------+-----------------+
+    | Property           | occupies space | consumes clicks |
+    +--------------------+----------------+-----------------+
+    | opacity: 0         |        ✓       |        ✓        |
+    +--------------------+----------------+-----------------+
+    | visibility: hidden |        ✓       |        ✗        |
+    +--------------------+----------------+-----------------+
+    | display: none      |        ✗       |        ✗        |
+    +--------------------+----------------+-----------------+
+    ✓: yes
+    ✗: no
+    */
+    visibility: hidden;
+    transform: translateY(-4rem);
+  }
+
+  &__radio-group {
+    width: 49%;
+    display: inline-block;
+
+    @include respond(tab-port) {
+      width: 100%;
+      margin-bottom: 2rem;
+    }
+  }
+
+  &__radio-input {
+    /* If we set the to none, accessibility will be an issue because the element is taken out from the flow of DOM and pressing tab or spacebar can't interact with it anymore.
+    However, we can still make the accessible, but must use Javascrip to accomplish it. */
+    display: none;
+    /* A workaround proposed is to set opacity to 0%, the drawback is that this element will then occupy space in the webpage. */
+    // opacity: 0;
+    /* Another workaround is to add tabindex="0" into the HTML input element to both the radio buttons. This way you can tab through it but you can't select it using keyboard. But through my experimentation, even the tab doesn't work at all.*/
+  }
+
+  &__radio-label {
+    font-size: $default-font-size;
+    cursor: pointer;
+    position: relative;
+    padding-left: 4.5rem;
+  }
+
+  &__radio-button {
+    height: 3rem;
+    width: 3rem;
+    border: 5px solid $color-primary;
+    border-radius: 50%;
+    display: inline-block;
+    position: absolute;
+    left: 0;
+    top: -0.4rem;
+
+    &::after {
+      content: '';
+      display: block;
+      height: 1.3rem;
+      width: 1.3rem;
+      border-radius: 50%;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: $color-primary;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+  }
+
+  /* "checked" is pseudo class for radio input field when the radio is being checked. We use "~" to select the sibling of &__radio-label, then select its child pseudo element. */
+  &__radio-input:checked ~ &__radio-label &__radio-button::after {
+    opacity: 1;
+  }
+}

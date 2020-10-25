@@ -1,0 +1,122 @@
+/* FIXME There is spacing at the bottom of image on the &__left contrainer which contains the images. */
+
+.popup {
+  height: 100vh;
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: rgba($color-black, 0.8);
+  z-index: 9999;
+  opacity: 0;
+  /* We cannot use display: none because this way we cannot animate it. */
+  visibility: hidden;
+  transition: all 0.3s;
+  
+  /* @supports means it will check if the mentioned properties are supported for by the user agent (browser). If yes, then only the following code will be executed. This technique is called Graceful Degradation.
+  backdrop-filter is a brand new property that apply effect only to the element behind it, not itself. As of this writing, it only supported by Chrome & Safari, not Firefox. */
+  @supports (-webkit-backdrop-filter: blur (10px)) or (backdrop-filter: blur(10px)) {
+    -webkit-backdrop-filter: blur (10px);
+    backdrop-filter: blur(10px);
+    background-color: rgba($color-black, 0.3);
+  }
+
+  &__content {
+    @include absCenter;
+
+    width: 75%;
+    background-color: $color-white;
+    box-shadow: 0 2rem 4rem rgba($color-black, 0.2);
+    border-radius: 3px;
+    /* We must set display to table because its direct childs has display set to table-cell. This is faking to behave like a table because the actual table need to code into HTML document. */
+    display: table;
+    overflow: hidden;
+    opacity: 0;
+    /* We have to repeat translate values here because @include mixin already has it inside. One class can only have 1 transform property written, if not the later will overwrite it. */
+    transform: translate(-50%, -50%) scale(0.25);
+    transition: all 0.5s 0.2s;
+  }
+
+  &__left {
+    width: 33.333333%;
+    display: table-cell;
+  }
+
+  &__right {
+    width: 66.6666667%;
+    display: table-cell;
+    /* To have its content vertically align to the center. We can value like top or bottom too. */
+    vertical-align: middle;
+    padding: 3rem 5rem;
+  }
+
+  &__img {
+    display: block;
+    width: 100%;
+  }
+
+  &__text {
+    font-size: 1.4rem;
+    margin-bottom: 4rem;
+
+    column-count: 2;
+    /* Because column gap follow the font-size of its element, not the root. So in this case 1rem = 14px. */
+    column-gap: 4rem;
+    /* Column rule is the border line between columns. */
+    column-rule: 1px solid $color-grey-light-2;
+    -moz-column-count: 2;
+    -moz-column-gap: 4rem;
+    -moz-column-rule: 1px solid $color-grey-light-2;
+
+    /* It's important to put <html lang="en"> to specify the language for hyphenation.
+    At the moment of this coding (Oct 2020), hyphen is not supported on Chrome for windows, only on Android & Mac. Whereas firefox is fully supported. */
+    -moz-hyphens: auto;
+    -ms-hyphens: auto;
+    -webkit-hyphens: auto;
+    hyphens: auto;
+  }
+
+  /* ############################### Open states ############################## */
+
+  /* URLs with an # followed by an anchor name represents a unique element link to a certain element (the target element) within a document. The element being linked to is the target element.
+  In plain English, the code below denotes when .popup being as the target element, which is when the URL has the text of #popup in it, this pseudo class will then become active and get selected. */
+  &:target {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  /* We style only the content because we want the dark background to animate at different pace than the content. That is why we set a 0.2s delay for animiation in $__content */
+  &:target &__content {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  &__close {
+    &:link,
+    &:visited {
+      color: $color-grey-dark;
+      position: absolute;
+      top: 2.5rem;
+      right: 2.5rem;
+      font-size: 3rem;
+      text-decoration: none;
+      display: inline-block;
+      transition: all 0.2s;
+      line-height: 1;
+    }
+
+    &:hover {
+      color: $color-primary;
+    }
+  }
+
+  /* Below we add an anchor element above the entire dark background, and set href="#section-tours" just like we did with the close button. This way user can click anywhere in the dark background to have the pop up close. */
+  &__background {
+    display: block;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    opacity: 0;
+    cursor: default;
+  }
+}

@@ -1,0 +1,125 @@
+.btn {
+  &,
+  &:link,
+  &:visited {
+    text-transform: uppercase;
+    text-decoration: none;
+    padding: 1.5rem 4rem;
+    display: inline-block;
+    border-radius: 10rem;
+    /* The transition property code has to be written in here with these states because we indicate there are other states available to animate.
+    Using 'all' keyword will make it animate to all different states at once.*/
+    transition: all 0.2s;
+    /* In CSS, the default position is 'static'.
+    If the position of an element is being defined as other than 'static', it will refer accordingly to its parents. The way it refers is going up to its parents until the one has its position NOT defined to static.
+    That is why we need to define relative position here for our .btn::after to refer to.*/
+    position: relative;
+    font-size: $default-font-size;
+    //Change for the <button> element
+    border: none;
+    cursor: pointer;
+  }
+
+  &:hover {
+    /* translateY is based on Y-axis. BUT its value is NOT like graph. Here, the +ve value will indicate it is below the original position and vice versa because as we go down the screen vertically, the value increases.
+    Here, we try to make it pop up to the screen.*/
+    transform: translateY(-3px);
+    /* box-shadow syntax as below:
+    box-shadow: none|h-offset(X-axis) v-offset(Y-axis) blur spread color |inset|initial|inherit;
+    For blur argument, it's like shadow length; smaller value brings sharp shadow, higher value brings blur shadow.
+    Here, we try to make the pop-up button has shadow to show its realism on the screen.*/
+    box-shadow: 0 1rem 2rem rgba($color-black, 0.2);
+
+    /* When we hover over the button, we want some styles for the ::after pseudo-element.*/
+    &::after {
+      transform: scaleX(1.4) scaleY(1.6);
+      opacity: 0;
+    }
+  }
+
+  /* :active means when mouse is clicking & holding, NOT after releasing. :focus means the element has been pressed or selected. */
+  &:active,
+  &:focus {
+    /* We set none here because we want to button in the form to have no outline after focus. */
+    outline: none;
+    /* The -1px is relative to its previous state which are the :link or :visited states.
+      Here, we try to make the button away from screen when user click, which gives real mechanic button feel.*/
+    transform: translateY(-1px);
+    /* Here, we try to make the shadow appear lesser to give the sensation of a real world pressed button.*/
+    box-shadow: 0 0.5rem 1rem rgba($color-black, 0.2);
+  }
+
+  &--white {
+    background-color: $color-white;
+    color: $color-grey-dark; /* It's same as using 'inherent'. */
+
+    &::after {
+      background-color: $color-white;
+    }
+  }
+
+  &--green {
+    background-color: $color-primary;
+    color: $color-white;
+
+    &::after {
+      background-color: $color-primary;
+    }
+  }
+
+  /* :hover & :active are "Pseudo class" whereas the ::after is a "Pseudo element".
+  Using ::after, we create a child-like element right after the button. We then make it appears behind. */
+  &::after {
+    /* Must specify the content AND display property, if not it will not work. */
+    content: '';
+    /* We use inline-block because the button also is inline-block. */
+    display: inline-block;
+    /* We set to 100% because we want it to be same as its parent. */
+    height: 100%;
+    width: 100%;
+    border-radius: 10rem;
+    /* We set absolute and with zero value at top & left because we want it to appear exactly at back of its parent which has position set to relatively. */
+    position: absolute;
+    top: 0;
+    left: 0;
+    /* Put this child element behind the button. */
+    z-index: -1;
+    transition: all 0.4s;
+  }
+
+  /* We created this class only for its animation purpose because we don't want other buttons on the same page to animate the same way or not animate at all. */
+  &--animated {
+    /* Notice here we set 0.5s delay of animation to start. We then will see it appears on page before the animation starts. This is not what we want, we want it only appear after the animation finishes. To counter this, we use the property of animation-fill-mode. */
+    animation: moveInBottom 0.5s ease-out 0.75s;
+    /* To specify styles for element when the animation is not playing (before it starts, after it ends, or both). 
+    Using 'backwards', we set the element has same styles when keyframe is at 0%. For more options & details explanation, visit https://developer.mozilla.org/en-US/docs/Web/CSS/animation-fill-mode.*/
+    animation-fill-mode: backwards;
+  }
+}
+
+.btn-text {
+  &:link,
+  &:visited {
+    font-size: $default-font-size;
+    color: $color-primary;
+    display: inline-block;
+    text-decoration: none;
+    /* We don't want the default text-decoration for button, so we set our own border-bottom, only this way, we can use padding property.
+    For tiny size like 1-3px, we don't use rem because it doesn't make up of a difference when user increases root front-size. */
+    border-bottom: 1px solid $color-primary;
+    padding: 3px;
+    transition: all 0.2s;
+  }
+
+  &:hover {
+    background-color: $color-primary;
+    color: $color-white;
+    box-shadow: 0 1rem 2rem rgba($color-black, 0.15);
+    transform: translateY(-2px);
+  }
+
+  &:active {
+    box-shadow: 0 0.5rem 1rem rgba($color-black, 0.15);
+    transform: translateY(0);
+  }
+}
